@@ -1,5 +1,5 @@
 /* Japan TravelMate service worker — offline-first for critical routes */
-const VERSION = 'travelmate-v2'
+const VERSION = 'travelmate-v3'
 const STATIC_CACHE = `${VERSION}-static`
 const RUNTIME_CACHE = `${VERSION}-runtime`
 
