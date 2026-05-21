@@ -1,6 +1,10 @@
 /**
  * Pre-loaded trip data — single source of truth.
- * Edit the placeholder fields (passports, phones, PNRs) before deploying.
+ *
+ * This file contains personal information (passport numbers, DOB).
+ * It lives in a PRIVATE GitHub repo and the Vercel deployment is gated by
+ * Supabase auth, so only sutharsan + divya can ever fetch this bundle.
+ * Even so: do not make the repo public, and do not paste the bundle output.
  */
 
 export const TRIP = {
@@ -15,12 +19,22 @@ export type Family = {
   id: 'sutharsan' | 'divya' | 'adira'
   role: 'Father' | 'Mother' | 'Daughter'
   name: string
+  nameFull?: string         // canonical full name as used in hotel/flight bookings
   nameJa: string
-  dob?: string
   age?: number
+  dob?: string              // YYYY-MM-DD
+  placeOfBirth?: string
   passportCountry?: string
   passportNumber?: string
-  passportExpiry?: string
+  passportIssue?: string    // YYYY-MM-DD
+  passportExpiry?: string   // YYYY-MM-DD
+  passportFile?: string     // Supabase Storage path inside the `documents` bucket
+  visaNumber?: string       // Japan eVISA Issue No.
+  visaReceipt?: string      // Japan eVISA receipt number
+  visaIssue?: string
+  visaExpiry?: string
+  visaFile?: string         // Supabase Storage path
+  eidFile?: string          // Supabase Storage path
   mobileDubai?: string
   mobileRoaming?: string
   esimJp?: string
@@ -30,20 +44,30 @@ export type Family = {
   medical?: string
   allergies?: string
   favorites?: string[]
-  photoPath?: string
 }
 
 export const FAMILY: Family[] = [
   {
     id: 'sutharsan',
     role: 'Father',
-    name: 'Sutharsan Parthasarathy',
+    name: 'Sutharsan Parthasaarathy',
+    nameFull: 'Sutharsan Chiranjeevi Parthasaarathy',
     nameJa: 'スタルサン・パルタサラティ',
+    dob: '1986-11-29',
+    placeOfBirth: 'Kumbakonam, Tamil Nadu, India',
     passportCountry: 'India',
-    passportNumber: '— to be filled —',
-    passportExpiry: '— to be filled —',
+    passportNumber: 'Z4994373',
+    passportIssue: '2019-06-30',
+    passportExpiry: '2029-06-29',
+    passportFile: 'sutharsan/passport.pdf',
+    visaNumber: 'V260002847',
+    visaReceipt: '1000009478776',
+    visaIssue: '2026-03-04',
+    visaExpiry: '2026-06-04',
+    visaFile: 'sutharsan/visa.pdf',
+    eidFile: 'sutharsan/eid.pdf',
     mobileDubai: '+971 — to be filled —',
-    mobileRoaming: '+971 — same with roaming —',
+    mobileRoaming: '+971 — to be filled —',
     esimJp: '',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
@@ -54,12 +78,23 @@ export const FAMILY: Family[] = [
     id: 'divya',
     role: 'Mother',
     name: 'Divya',
+    nameFull: 'Divya Asuri Narasimha Chary',
     nameJa: 'ディヴィヤ',
+    dob: '1992-05-08',
+    placeOfBirth: 'Medchal, Telangana, India',
     passportCountry: 'India',
-    passportNumber: '— to be filled —',
-    passportExpiry: '— to be filled —',
+    passportNumber: 'Z5567458',
+    passportIssue: '2022-06-27',
+    passportExpiry: '2032-06-26',
+    passportFile: 'divya/passport.pdf',
+    visaNumber: 'V260002848',
+    visaReceipt: '1000009478749',
+    visaIssue: '2026-03-04',
+    visaExpiry: '2026-06-04',
+    visaFile: 'divya/visa.pdf',
+    eidFile: 'divya/eid.pdf',
     mobileDubai: '+971 — to be filled —',
-    mobileRoaming: '+971 — same with roaming —',
+    mobileRoaming: '+971 — to be filled —',
     esimJp: '',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
@@ -70,11 +105,22 @@ export const FAMILY: Family[] = [
     id: 'adira',
     role: 'Daughter',
     name: 'Adira',
+    nameFull: 'Adira Divya Sutharsan',
     nameJa: 'アディラ',
-    age: 4,
+    dob: '2022-01-22',
+    placeOfBirth: 'Dubai, United Arab Emirates',
     passportCountry: 'India',
-    passportNumber: '— to be filled —',
-    passportExpiry: '— to be filled —',
+    passportNumber: 'V2318222',
+    passportIssue: '2022-01-28',
+    passportExpiry: '2027-01-27',
+    passportFile: 'adira/passport.pdf',
+    visaNumber: 'V260002846',
+    visaReceipt: '1000009478760',
+    visaIssue: '2026-03-04',
+    visaExpiry: '2026-06-04',
+    visaFile: 'adira/visa.pdf',
+    eidFile: 'adira/eid.pdf',
+    age: 4,
     allergies: 'None stated',
     favorites: ['Rice', 'Plain pasta', 'Fruit', 'Yogurt', 'Biscuits', 'French fries', 'Dosa', 'Idli'],
   },
@@ -87,25 +133,27 @@ export type Hotel = {
   addressEn: string
   addressJa: string
   phone?: string
-  checkIn: string  // YYYY-MM-DD
-  checkOut: string // YYYY-MM-DD
-  city: 'Tokyo' | 'Hakone' | 'Kyoto' | 'Osaka'
   confirmation?: string
+  pin?: string
+  guestName?: string
+  costJpy?: number
+  costAed?: number
+  license?: string
+  gpsLat?: number
+  gpsLng?: number
+  checkIn: string  // YYYY-MM-DD
+  checkInTime?: string
+  checkOut: string // YYYY-MM-DD
+  checkOutTime?: string
+  city: 'Tokyo' | 'Hakone' | 'Kyoto' | 'Osaka'
   notes?: string
 }
 
 export const HOTELS: Hotel[] = [
-  {
-    id: 'minn-ueno',
-    name: 'Minn Ueno Iriya',
-    nameJa: 'Minn 上野 入谷',
-    addressEn: 'Taito-ku Iriya 2-34-5, Tokyo, Japan',
-    addressJa: '東京都台東区入谷2-34-5',
-    city: 'Tokyo',
-    checkIn: '2026-05-22',
-    checkOut: '2026-05-26',
-    notes: '4 nights paid. 24 May night unused (Disney hotel). Luggage stays in room.',
-  },
+  // Order matters: when a date is inside multiple stays (e.g. 24 May night is Disney
+  // Celebration but Minn Ueno is also reserved), the shorter stay should win.
+  // hotelForNight() in src/lib/select.ts now prefers the shortest matching range, so
+  // any order here is safe; we still list Disney Celebration first for readability.
   {
     id: 'disney-celebration',
     name: 'Tokyo Disney Celebration Hotel',
@@ -114,40 +162,94 @@ export const HOTELS: Hotel[] = [
     addressJa: '千葉県浦安市舞浜1-1',
     city: 'Tokyo',
     checkIn: '2026-05-24',
+    checkInTime: '15:00',
     checkOut: '2026-05-25',
-    notes: 'Happy Entry 15-min early park access.',
+    checkOutTime: '11:00',
+    notes: 'Happy Entry — 15-min early access to Tokyo Disneyland on 25 May.',
+  },
+  {
+    id: 'minn-ueno',
+    name: 'Minn Ueno Iriya',
+    nameJa: 'Minn 上野 入谷',
+    addressEn: 'Taito-ku Iriya 2-34-5, Taito Ward, Tokyo, 110-0013, Japan',
+    addressJa: '東京都台東区入谷2-34-5',
+    phone: '+81 50 3642 4954',
+    confirmation: '5694.443.883',
+    pin: '4113',
+    guestName: 'Sutharsan Chiranjeevi Parthasaarathy',
+    costJpy: 183577,
+    costAed: 4412.28,
+    license: '30 き 158',
+    gpsLat: 35.43324, gpsLng: 139.47235,
+    city: 'Tokyo',
+    checkIn: '2026-05-22',
+    checkInTime: '15:00',
+    checkOut: '2026-05-26',
+    checkOutTime: '10:00',
+    notes: '4 nights paid. 24 May night spent at Disney Celebration — luggage stays in this room. Pre-check-in done. Arrival 19:00–20:00.',
   },
   {
     id: 'minn-kyoto',
-    name: 'Minn Karasuma Gojo Kyoto',
-    nameJa: 'Minn 烏丸五条 京都',
-    addressEn: 'Karasuma-Gojo, Shimogyo-ku, Kyoto, Japan',
+    name: 'Minn Karasuma Gojo Kyoto Station North',
+    nameJa: 'Minn 烏丸五条 京都駅北',
+    addressEn: 'Shimogyo Ward, Kyoto, 600-8183, Japan',
     addressJa: '京都府京都市下京区烏丸五条',
+    phone: '+81 50 3642 5548',
+    confirmation: '6840.916.416',
+    pin: '4553',
+    guestName: 'Sutharsan Chiranjeevi Parthasaarathy',
+    costJpy: 27180,
+    costAed: 653.29,
+    license: '452',
+    gpsLat: 34.59598, gpsLng: 135.45730,
     city: 'Kyoto',
     checkIn: '2026-05-26',
+    checkInTime: '15:00',
     checkOut: '2026-05-27',
+    checkOutTime: '10:00',
+    notes: 'Non-refundable. Pre-check-in done. Arrival 18:00–19:00.',
   },
   {
     id: 'citadines-namba',
     name: 'Citadines Namba Osaka',
     nameJa: 'シタディーン難波大阪',
-    addressEn: '2-20-1 Nishishinsaibashi, Chuo-ku, Osaka, Japan',
-    addressJa: '大阪府大阪市中央区西心斎橋2-20-1',
+    addressEn: 'Naniwa-ku Nippombashi 3-5-25, Osaka, 556-0005, Japan',
+    addressJa: '大阪府大阪市浪速区日本橋3-5-25',
+    phone: '+81 6 6695 7017',
+    confirmation: '6816.645.167',
+    pin: '3606',
+    guestName: 'Sutharsan Chiranjeevi Parthasaarathy',
+    costJpy: 61241,
+    costAed: 1416.10,
+    license: '19-2997',
+    gpsLat: 34.39738, gpsLng: 135.30366,
     city: 'Osaka',
     checkIn: '2026-05-27',
+    checkInTime: '15:00',
     checkOut: '2026-05-29',
-    notes: '2 nights.',
+    checkOutTime: '11:00',
+    notes: '2 nights. Arrival 16:00–17:00. Accommodation tax payable at property.',
   },
   {
     id: 'monday-ningyocho',
     name: 'MONday Apart Nihonbashi Ningyocho',
     nameJa: 'MONday Apart 日本橋人形町',
-    addressEn: 'Nihonbashi-Ningyocho, Chuo-ku, Tokyo, Japan',
-    addressJa: '東京都中央区日本橋人形町',
+    addressEn: 'Chuo-ku Nihonbashikakigara-cho 1-34-5, Chuo Ward, Tokyo, 103-0014, Japan',
+    addressJa: '東京都中央区日本橋蛎殻町1-34-5',
+    phone: '+81 3 5642 7888',
+    confirmation: '5388.029.316',
+    pin: '0302',
+    guestName: 'Sutharsan Chiranjeevi Parthasaarathy',
+    costJpy: 63630,
+    costAed: 1471,
+    license: '2 き 16',
+    gpsLat: 35.40879, gpsLng: 139.47105,
     city: 'Tokyo',
     checkIn: '2026-05-29',
+    checkInTime: '15:00',
     checkOut: '2026-05-30',
-    notes: 'Close to T-CAT airport limousine bus.',
+    checkOutTime: '10:00',
+    notes: 'Close to T-CAT airport limousine bus. Pay on arrival. Arrival 16:00–17:00.',
   },
 ]
 
@@ -161,6 +263,9 @@ export type Train = {
   to: string
   car: string
   seats: string
+  reservation?: string
+  ticketIds?: string[]   // QR ticket security codes per passenger
+  confirmed?: boolean
 }
 
 export const TRAINS: Train[] = [
@@ -174,6 +279,7 @@ export const TRAINS: Train[] = [
     to: 'Odawara',
     car: 'Car 9',
     seats: 'Adult 15-C, Adult 15-D, Child 14-D',
+    confirmed: true,
   },
   {
     id: 'kodama-839',
@@ -185,6 +291,7 @@ export const TRAINS: Train[] = [
     to: 'Kyoto',
     car: 'Car 10',
     seats: 'Adult 16-C, Adult 16-D, Child 15-D',
+    confirmed: true,
   },
   {
     id: 'nozomi-84',
@@ -196,6 +303,9 @@ export const TRAINS: Train[] = [
     to: 'Tokyo',
     car: 'Car 9',
     seats: 'Adult 6-C, Adult 6-D, Child 7-D',
+    reservation: '2061',
+    ticketIds: ['E972 77E6 6E4B CD84 F193 3520 9779 820F', 'E378 7DEC 6A41 2691 7A19 14AC 7AF9 9EA3', 'E50E 0B9A 0637 7FE6 0507 D9FF AE0B 6D24'],
+    confirmed: true,
   },
 ]
 
@@ -209,30 +319,74 @@ export type Flight = {
   arrive: string
   from: string
   to: string
+  dropBagsBy?: string
+  clearSecurityBy?: string
+  boarding?: string
+  group?: string
+  passengers?: { who: string; nameOnTicket: string; seq: string; seat: string; ticket: string }[]
+  confirmed?: boolean
 }
 
 export const FLIGHTS: Flight[] = [
   {
     id: 'out-22may',
     airline: 'Emirates',
-    pnr: '— PNR to be filled —',
-    number: 'EK ___',
+    pnr: 'LA4ERB',
+    number: 'EK318',
     date: '2026-05-22',
     depart: '02:40',
     arrive: '17:35',
     from: 'DXB',
     to: 'NRT',
+    dropBagsBy: '01:10',
+    clearSecurityBy: '01:40',
+    boarding: '01:40',
+    group: '3',
+    confirmed: true,
+    passengers: [
+      { who: 'Sutharsan', nameOnTicket: 'Mr Sutharsan Chiranjeeviparthasaarathy', seq: '102', seat: '71G', ticket: '1762209510446' },
+      { who: 'Divya',     nameOnTicket: 'Ms Divya Asurinarasimhachary',             seq: '101', seat: '71F', ticket: '1762209510445' },
+      { who: 'Adira',     nameOnTicket: 'Miss Adira Divyasutharsan',                seq: '103', seat: '71E', ticket: '1762209510447' },
+    ],
   },
   {
     id: 'ret-30may',
     airline: 'Emirates',
-    pnr: '— PNR to be filled —',
+    pnr: 'LA4ERB',
     number: 'EK ___',
     date: '2026-05-30',
     depart: '— TBD —',
     arrive: '— TBD —',
     from: 'NRT',
     to: 'DXB',
+    confirmed: false,
+  },
+]
+
+export type Ticket = {
+  id: string
+  title: string
+  date: string
+  time?: string
+  reservation?: string
+  costJpy?: number
+  perPersonIds?: { who: string; code: string }[]
+  notes?: string
+}
+
+export const TICKETS: Ticket[] = [
+  {
+    id: 'disneyland-25may',
+    title: 'Tokyo Disneyland — 1-Day Passport',
+    date: '2026-05-25',
+    reservation: 'A00571698873',
+    costJpy: 24400,
+    perPersonIds: [
+      { who: 'Sutharsan', code: '2102012-621-06357879-0' },
+      { who: 'Divya',     code: '2102012-621-06357880-6' },
+      { who: 'Adira',     code: '2102032-621-01263138-9' },
+    ],
+    notes: 'Use Tokyo Disney Resort App. Validity through 10 May 2027 if unused.',
   },
 ]
 
@@ -337,7 +491,7 @@ export type Activity = {
   title: string
   city: string
   kind: 'transport' | 'sight' | 'meal' | 'check-in' | 'check-out' | 'park'
-  ref?: string  // links to trains/hotels/restaurants id
+  ref?: string  // links to trains/hotels/restaurants/tickets id
   notes?: string
 }
 
@@ -351,13 +505,16 @@ export const ACTIVITIES: Activity[] = [
   { date: '2026-05-23', title: 'Asakusa morning (Senso-ji)', city: 'Tokyo', kind: 'sight' },
   { date: '2026-05-23', time: '18:00', title: 'Shibuya Sky (sunset slot)', city: 'Tokyo', kind: 'sight', notes: 'Book ahead' },
 
-  // Day 3 Sun 24 May - Disney
-  { date: '2026-05-24', title: 'Tokyo Disneyland (Happy Entry)', city: 'Tokyo', kind: 'park' },
-  { date: '2026-05-24', title: 'Stay: Disney Celebration Hotel', city: 'Tokyo', kind: 'check-in', ref: 'disney-celebration' },
+  // Day 3 Sun 24 May - Travel to Disney area, check in
+  { date: '2026-05-24', title: 'Travel to Maihama / Disney area', city: 'Tokyo', kind: 'transport' },
+  { date: '2026-05-24', time: '15:00', title: 'Check in Disney Celebration Hotel', city: 'Tokyo', kind: 'check-in', ref: 'disney-celebration',
+    notes: 'Sleep here to unlock Happy Entry next morning' },
+  { date: '2026-05-24', title: 'Evening: relax / DisneySea preview / dinner', city: 'Tokyo', kind: 'sight' },
 
-  // Day 4 Mon 25 May - DisneySea / back to Minn
-  { date: '2026-05-25', title: 'DisneySea or rest day', city: 'Tokyo', kind: 'park' },
-  { date: '2026-05-25', title: 'Return to Minn Ueno (luggage there)', city: 'Tokyo', kind: 'check-in', ref: 'minn-ueno' },
+  // Day 4 Mon 25 May - Disneyland day
+  { date: '2026-05-25', time: '08:15', title: 'Happy Entry → Tokyo Disneyland', city: 'Tokyo', kind: 'park', ref: 'disneyland-25may',
+    notes: '15-min early access for Celebration Hotel guests. Reservation A00571698873.' },
+  { date: '2026-05-25', title: 'Return to Minn Ueno Iriya in the evening', city: 'Tokyo', kind: 'check-in', ref: 'minn-ueno' },
 
   // Day 5 Tue 26 May - Hakone day trip + Kyoto
   { date: '2026-05-26', time: '07:36', title: 'Hikari 633 → Odawara (Car 9, 15-C/D + 14-D)', city: 'Tokyo', kind: 'transport', ref: 'hikari-633' },
@@ -365,7 +522,7 @@ export const ACTIVITIES: Activity[] = [
   { date: '2026-05-26', time: '16:35', title: 'Kodama 839 Odawara → Kyoto', city: 'Hakone', kind: 'transport', ref: 'kodama-839' },
   { date: '2026-05-26', time: '20:00', title: 'Check in Minn Karasuma Gojo', city: 'Kyoto', kind: 'check-in', ref: 'minn-kyoto' },
 
-  // Day 6 Wed 27 May - Kyoto
+  // Day 6 Wed 27 May - Kyoto + travel to Osaka
   { date: '2026-05-27', time: '12:00', title: 'Shigetsu lunch (Flower course) — BOOK', city: 'Kyoto', kind: 'meal', ref: 'shigetsu' },
   { date: '2026-05-27', title: 'Arashiyama bamboo grove', city: 'Kyoto', kind: 'sight' },
   { date: '2026-05-27', title: 'Travel to Osaka — check in Citadines Namba', city: 'Osaka', kind: 'check-in', ref: 'citadines-namba' },
@@ -375,7 +532,7 @@ export const ACTIVITIES: Activity[] = [
   { date: '2026-05-28', title: 'Dinner: Shama Vegetarian Indian', city: 'Osaka', kind: 'meal', ref: 'shama' },
 
   // Day 8 Fri 29 May - back to Tokyo
-  { date: '2026-05-29', time: '09:24', title: 'Nozomi 84 Shin-Osaka → Tokyo', city: 'Osaka', kind: 'transport', ref: 'nozomi-84' },
+  { date: '2026-05-29', time: '09:24', title: 'Nozomi 84 Shin-Osaka → Tokyo (Car 9, 6-C/D + 7-D)', city: 'Osaka', kind: 'transport', ref: 'nozomi-84' },
   { date: '2026-05-29', title: 'Check in MONday Apart Ningyocho', city: 'Tokyo', kind: 'check-in', ref: 'monday-ningyocho' },
   { date: '2026-05-29', time: '20:00', title: 'TeamLab Planets — BOOK', city: 'Tokyo', kind: 'sight' },
   { date: '2026-05-29', time: '19:00', title: 'Ain Soph Ginza dinner — BOOK', city: 'Tokyo', kind: 'meal', ref: 'ainsoph-ginza' },
@@ -395,10 +552,17 @@ export type BookingStatus = {
 }
 
 export const BOOKING_STATUS: BookingStatus[] = [
-  { id: 'flights', label: 'Flights (Emirates DXB–NRT round trip)', done: true, category: 'flights' },
-  { id: 'hotels', label: 'All 5 hotels', done: true, category: 'hotels' },
-  { id: 'shinkansen', label: 'Bullet trains × 3 (Hikari/Kodama/Nozomi)', done: true, category: 'trains' },
-  { id: 'disney', label: 'Disneyland tickets', done: true, category: 'tickets' },
+  { id: 'flight-out', label: 'Flight out · EK318 · 22 May 02:40 → NRT · PNR LA4ERB', done: true, category: 'flights' },
+  { id: 'flight-ret', label: 'Flight return · 30 May NRT → DXB (number TBD)', done: false, category: 'flights', detail: 'Confirm Emirates return flight number, depart/arrive times.' },
+  { id: 'hotel-minn-ueno', label: 'Hotel: Minn Ueno Iriya · 22–26 May · #5694.443.883', done: true, category: 'hotels' },
+  { id: 'hotel-disney', label: 'Hotel: Disney Celebration Hotel · 24 May', done: true, category: 'hotels' },
+  { id: 'hotel-minn-kyoto', label: 'Hotel: Minn Karasuma Gojo Kyoto · 26 May · #6840.916.416', done: true, category: 'hotels' },
+  { id: 'hotel-citadines', label: 'Hotel: Citadines Namba Osaka · 27–29 May · #6816.645.167', done: true, category: 'hotels' },
+  { id: 'hotel-monday', label: 'Hotel: MONday Apart Ningyocho · 29 May · #5388.029.316', done: true, category: 'hotels' },
+  { id: 'shinkansen-hikari', label: 'Hikari 633 · 26 May · Tokyo→Odawara', done: true, category: 'trains' },
+  { id: 'shinkansen-kodama', label: 'Kodama 839 · 26 May · Odawara→Kyoto', done: true, category: 'trains' },
+  { id: 'shinkansen-nozomi', label: 'Nozomi 84 · 29 May · Shin-Osaka→Tokyo · Res 2061', done: true, category: 'trains' },
+  { id: 'disney', label: 'Tokyo Disneyland · 25 May · #A00571698873', done: true, category: 'tickets' },
   { id: 'shigetsu', label: 'Shigetsu Kyoto — URGENT (Wed 27 May lunch)', done: false, category: 'restaurants',
     link: 'https://shigetsu.com/', detail: 'Reserve Flower course, 12:00. 2-week lead time.' },
   { id: 'teamlab', label: 'TeamLab Planets — Fri 29 May evening', done: false, category: 'tickets',
@@ -481,6 +645,7 @@ export const TAXI_DESTINATIONS: TaxiDestination[] = [
   { id: 'maihama', label: 'Maihama Station (Disneyland)', nameJa: '舞浜駅', addressJa: '千葉県浦安市舞浜26' },
   { id: 'shibuya', label: 'Shibuya Station', nameJa: '渋谷駅', addressJa: '東京都渋谷区道玄坂' },
   { id: 'asakusa', label: 'Asakusa (Senso-ji)', nameJa: '浅草寺', addressJa: '東京都台東区浅草2-3-1' },
+  { id: 't-cat', label: 'T-CAT (Tokyo City Air Terminal)', nameJa: '東京シティエアターミナル', addressJa: '東京都中央区日本橋箱崎町42-1' },
 ]
 
 export type SouvenirRecipient = { id: string; name: string; group: string }
@@ -502,3 +667,35 @@ export const EMERGENCY = {
   ambulance: '119',
   uaeEmbassyTokyo: '+81 3-5489-0804',
 }
+
+/**
+ * Documents stored in the Supabase Storage `documents` bucket.
+ * The Documents page reads from these paths. To upload: Supabase Dashboard →
+ * Storage → `documents` → create folders matching the family member id (sutharsan,
+ * divya, adira) and upload the PDFs with the exact filenames below.
+ */
+export type DocItem = {
+  id: string
+  title: string
+  who: 'sutharsan' | 'divya' | 'adira' | 'family'
+  type: 'passport' | 'visa' | 'eid' | 'certificate' | 'birth' | 'other'
+  path: string  // path inside the `documents` Supabase bucket
+}
+
+export const DOCUMENTS: DocItem[] = [
+  // Sutharsan
+  { id: 'p-su',  title: 'Passport',     who: 'sutharsan', type: 'passport', path: 'sutharsan/passport.pdf' },
+  { id: 'v-su',  title: 'Japan visa',   who: 'sutharsan', type: 'visa',     path: 'sutharsan/visa.pdf' },
+  { id: 'e-su',  title: 'Emirates ID',  who: 'sutharsan', type: 'eid',      path: 'sutharsan/eid.pdf' },
+  // Divya
+  { id: 'p-di',  title: 'Passport',     who: 'divya',     type: 'passport', path: 'divya/passport.pdf' },
+  { id: 'v-di',  title: 'Japan visa',   who: 'divya',     type: 'visa',     path: 'divya/visa.pdf' },
+  { id: 'e-di',  title: 'Emirates ID',  who: 'divya',     type: 'eid',      path: 'divya/eid.pdf' },
+  // Adira
+  { id: 'p-ad',  title: 'Passport',     who: 'adira',     type: 'passport', path: 'adira/passport.pdf' },
+  { id: 'v-ad',  title: 'Japan visa',   who: 'adira',     type: 'visa',     path: 'adira/visa.pdf' },
+  { id: 'e-ad',  title: 'Emirates ID',  who: 'adira',     type: 'eid',      path: 'adira/eid.pdf' },
+  { id: 'b-ad',  title: 'Birth certificate', who: 'adira', type: 'birth',   path: 'adira/birth-certificate.pdf' },
+  // Family
+  { id: 'm-fam', title: 'Marriage certificate', who: 'family', type: 'certificate', path: 'family/marriage-certificate.pdf' },
+]

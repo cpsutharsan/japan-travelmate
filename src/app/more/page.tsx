@@ -11,6 +11,7 @@ const ITEMS: { href: string; label: string; sub: string }[] = [
   { href: '/souvenirs',    label: '🎁 Souvenir tracker',   sub: 'Who gets what'               },
   { href: '/adira',        label: '🧒 Adira mode',         sub: 'Safety card + happy meter'   },
   { href: '/family',       label: '👨‍👩‍👧 Family profiles',     sub: 'Phones, passports, vCard'    },
+  { href: '/documents',    label: '📄 Documents',          sub: 'Passports, visas, EIDs'       },
   { href: '/emergency',    label: '🆘 Emergency',          sub: 'Police, embassy, hospitals'  },
   { href: '/status',       label: '📋 Booking status',     sub: 'Pending vs confirmed'        },
   { href: '/log/export',   label: '📕 Memory book',        sub: 'PDF export at end of trip'   },

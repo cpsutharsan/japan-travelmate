@@ -55,6 +55,11 @@ export default function EmergencyPage() {
         </ul>
       </section>
 
+      <Link href="/documents" className="card card-bordered-gold block">
+        <p className="font-medium">📄 Documents (passports, visas, IDs)</p>
+        <p className="text-xs text-ink/55">Open and show to authorities when needed.</p>
+      </Link>
+
       <section className="card">
         <p className="text-xs uppercase tracking-widest text-ink/50 mb-2">Hospital / clinic</p>
         <p className="text-sm text-ink/70">Nearest English-speaking clinic depends on city. Search:</p>

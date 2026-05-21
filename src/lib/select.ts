@@ -7,10 +7,16 @@ import { isToday, todayJST, tripDateISO, tripDayNumber } from './date'
 import { differenceInMinutes, parse } from 'date-fns'
 
 export function hotelForNight(dateISO: string): Hotel | null {
-  // The hotel where you SLEEP that night is the one whose [checkIn, checkOut) interval
-  // contains dateISO. Sleeping date = the date you woke up the next morning -1, here we
-  // treat dateISO as the check-in night.
-  return HOTELS.find(h => dateISO >= h.checkIn && dateISO < h.checkOut) ?? null
+  // The hotel where you SLEEP that night is the one whose [checkIn, checkOut)
+  // interval contains dateISO. Two bookings can overlap (e.g. on 24 May we sleep
+  // at Disney Celebration but Minn Ueno is also reserved for luggage) — in that
+  // case the SHORTER stay wins, since that's where we're actually sleeping.
+  const candidates = HOTELS.filter(h => dateISO >= h.checkIn && dateISO < h.checkOut)
+  if (candidates.length === 0) return null
+  return candidates.reduce((best, h) => {
+    const len = (d1: string, d2: string) => Math.abs(new Date(d2).getTime() - new Date(d1).getTime())
+    return len(best.checkIn, best.checkOut) <= len(h.checkIn, h.checkOut) ? best : h
+  })
 }
 
 export function activitiesFor(dateISO: string): Activity[] {

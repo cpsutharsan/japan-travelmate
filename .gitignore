@@ -9,3 +9,7 @@ dist
 .vercel
 *.tsbuildinfo
 .DS_Store
+
+# Sensitive personal docs — never commit. Belongs in private Supabase Storage.
+bookings to confirm/
+docs-private/

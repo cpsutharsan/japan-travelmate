@@ -91,8 +91,20 @@ export default function FamilyDetail() {
         <p className="text-xs uppercase tracking-widest text-ink/50">Passport</p>
         <Row label="Country" value={merged.passportCountry ?? ''} onChange={v => save({ passportCountry: v })} editable />
         <Row label="Number" value={revealPassport ? (merged.passportNumber ?? '') : '•••• tap reveal'} onChange={v => save({ passportNumber: v })} editable={revealPassport} />
+        <Row label="Issued" value={(merged as any).passportIssue ?? ''} onChange={v => save({ passportIssue: v })} editable />
         <Row label="Expiry" value={merged.passportExpiry ?? ''} onChange={v => save({ passportExpiry: v })} editable />
+        <Row label="DOB" value={(merged as any).dob ?? ''} onChange={v => save({ dob: v })} editable />
+        <Row label="Place of birth" value={(merged as any).placeOfBirth ?? ''} onChange={v => save({ placeOfBirth: v })} editable />
         <button className="pill" onClick={() => setRevealPassport(v => !v)}>{revealPassport ? 'Hide' : 'Reveal'} passport</button>
+      </section>
+
+      <section className="card space-y-2">
+        <p className="text-xs uppercase tracking-widest text-ink/50">Japan visa</p>
+        <Row label="Issue No." value={(merged as any).visaNumber ?? ''} onChange={v => save({ visaNumber: v })} editable />
+        <Row label="Receipt" value={(merged as any).visaReceipt ?? ''} onChange={v => save({ visaReceipt: v })} editable />
+        <Row label="Issued" value={(merged as any).visaIssue ?? ''} onChange={v => save({ visaIssue: v })} editable />
+        <Row label="Expiry" value={(merged as any).visaExpiry ?? ''} onChange={v => save({ visaExpiry: v })} editable />
+        <Link href={`/documents`} className="pill inline-block">📄 View PDFs</Link>
       </section>
 
       <section className="card space-y-2">
