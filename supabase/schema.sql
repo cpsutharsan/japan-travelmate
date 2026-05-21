@@ -72,6 +72,19 @@ create table if not exists public.bookings (
   updated_at timestamptz default now()
 );
 
+-- User-added bookings (transfers, tours, etc.) created from the app UI — no code change needed.
+create table if not exists public.custom_bookings (
+  id text primary key,
+  category text not null,
+  title text not null,
+  subtitle text,
+  date date,
+  cost text,
+  fields jsonb not null default '[]'::jsonb,
+  notes text,
+  created_at timestamptz default now()
+);
+
 -- Buckets (run as one-off via Storage UI or `supabase storage` CLI):
 --   bookings  (private)   — PDFs / e-tickets
 --   photos    (private)   — daily log photos
@@ -101,7 +114,7 @@ end $$;
 do $$
 declare t text;
 begin
-  for t in select unnest(array['expenses', 'logs', 'happy', 'souvenirs', 'contacts', 'profiles', 'bookings']) loop
+  for t in select unnest(array['expenses', 'logs', 'happy', 'souvenirs', 'contacts', 'profiles', 'bookings', 'custom_bookings']) loop
     execute format('alter table public.%I enable row level security', t);
     execute format('drop policy if exists "tm_all_auth" on public.%I', t);
     execute format(

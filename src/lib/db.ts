@@ -92,6 +92,27 @@ export type Settings = {
   rateUpdatedAt: number
 }
 
+export const CUSTOM_BOOKING_CATEGORIES = [
+  'transfer', 'tour', 'flight', 'hotel', 'train', 'ticket', 'other',
+] as const
+export type CustomBookingCategory = typeof CUSTOM_BOOKING_CATEGORIES[number]
+
+export type CustomBookingField = { label: string; value: string }
+
+/** A booking added by the user from the UI — no code change required. */
+export type CustomBookingRow = {
+  id: string
+  category: CustomBookingCategory
+  title: string
+  subtitle?: string
+  date?: string          // YYYY-MM-DD
+  cost?: string          // free text, e.g. "$128.18" or "¥24,400"
+  fields: CustomBookingField[]
+  notes?: string
+  ts: number
+  synced?: boolean
+}
+
 interface TravelMateDB extends DBSchema {
   expenses:    { key: string; value: ExpenseRow; indexes: { 'by-date': string } }
   logs:        { key: string; value: LogRow; indexes: { 'by-date': string } }
@@ -103,24 +124,30 @@ interface TravelMateDB extends DBSchema {
   photos:      { key: string; value: PendingPhoto; indexes: { 'by-date': string } }
   settings:    { key: string; value: Settings }
   bookings:    { key: string; value: { id: string; done: boolean } }
+  customBookings: { key: string; value: CustomBookingRow }
 }
 
 let dbPromise: Promise<IDBPDatabase<TravelMateDB>> | null = null
 
 export function db(): Promise<IDBPDatabase<TravelMateDB>> {
   if (!dbPromise) {
-    dbPromise = openDB<TravelMateDB>('travelmate', 1, {
-      upgrade(d) {
-        const e = d.createObjectStore('expenses', { keyPath: 'id' });    e.createIndex('by-date', 'date')
-        const l = d.createObjectStore('logs', { keyPath: 'id' });        l.createIndex('by-date', 'date')
-        const h = d.createObjectStore('happy', { keyPath: 'id' });       h.createIndex('by-date', 'date')
-        d.createObjectStore('souvenirs', { keyPath: 'id' })
-        d.createObjectStore('checklist', { keyPath: 'id' })
-        d.createObjectStore('profiles', { keyPath: 'id' })
-        d.createObjectStore('contacts', { keyPath: 'id' })
-        const p = d.createObjectStore('photos', { keyPath: 'id' });      p.createIndex('by-date', 'date')
-        d.createObjectStore('settings', { keyPath: 'id' })
-        d.createObjectStore('bookings', { keyPath: 'id' })
+    dbPromise = openDB<TravelMateDB>('travelmate', 2, {
+      upgrade(d, oldVersion) {
+        if (oldVersion < 1) {
+          const e = d.createObjectStore('expenses', { keyPath: 'id' });    e.createIndex('by-date', 'date')
+          const l = d.createObjectStore('logs', { keyPath: 'id' });        l.createIndex('by-date', 'date')
+          const h = d.createObjectStore('happy', { keyPath: 'id' });       h.createIndex('by-date', 'date')
+          d.createObjectStore('souvenirs', { keyPath: 'id' })
+          d.createObjectStore('checklist', { keyPath: 'id' })
+          d.createObjectStore('profiles', { keyPath: 'id' })
+          d.createObjectStore('contacts', { keyPath: 'id' })
+          const p = d.createObjectStore('photos', { keyPath: 'id' });      p.createIndex('by-date', 'date')
+          d.createObjectStore('settings', { keyPath: 'id' })
+          d.createObjectStore('bookings', { keyPath: 'id' })
+        }
+        if (oldVersion < 2) {
+          d.createObjectStore('customBookings', { keyPath: 'id' })
+        }
       },
     })
   }
