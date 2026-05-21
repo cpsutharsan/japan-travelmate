@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FLIGHTS, HOTELS, TICKETS, TRAINS } from '@/lib/trip'
 import { fmtShort } from '@/lib/date'
+import CustomBookings from '@/components/CustomBookings'
 
 export default function BookingsPage() {
   return (
@@ -49,6 +50,8 @@ export default function BookingsPage() {
             badge={t.reservation ? `#${t.reservation}` : undefined} />
         ))}
       </Section>
+
+      <CustomBookings />
 
       <Section accent="gold" icon="📁" label="Documents & files">
         <BookingCard href="/documents"
