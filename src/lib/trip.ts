@@ -66,13 +66,14 @@ export const FAMILY: Family[] = [
     visaExpiry: '2026-06-04',
     visaFile: 'sutharsan/visa.pdf',
     eidFile: 'sutharsan/eid.pdf',
-    mobileDubai: '+971 — to be filled —',
-    mobileRoaming: '+971 — to be filled —',
-    esimJp: '',
+    mobileDubai: '+971 56 282 9428',
+    mobileRoaming: '+971 56 282 9428',
+    esimJp: 'Sakura Mobile (data-only SIM)',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
-    bloodGroup: '',
-    medical: '',
+    bloodGroup: 'O+',
+    medical: 'None',
+    allergies: 'None',
   },
   {
     id: 'divya',
@@ -93,13 +94,14 @@ export const FAMILY: Family[] = [
     visaExpiry: '2026-06-04',
     visaFile: 'divya/visa.pdf',
     eidFile: 'divya/eid.pdf',
-    mobileDubai: '+971 — to be filled —',
-    mobileRoaming: '+971 — to be filled —',
-    esimJp: '',
+    mobileDubai: '+971 50 662 3918',
+    mobileRoaming: '+971 50 662 3918',
+    esimJp: 'Sakura Mobile (data-only SIM)',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
-    bloodGroup: '',
-    medical: '',
+    bloodGroup: 'B+',
+    medical: 'None',
+    allergies: 'None',
   },
   {
     id: 'adira',
@@ -121,7 +123,9 @@ export const FAMILY: Family[] = [
     visaFile: 'adira/visa.pdf',
     eidFile: 'adira/eid.pdf',
     age: 4,
-    allergies: 'None stated',
+    allergies: 'None',
+    medical: 'None',
+    bloodGroup: 'B-',
     favorites: ['Rice', 'Plain pasta', 'Fruit', 'Yogurt', 'Biscuits', 'French fries', 'Dosa', 'Idli'],
   },
 ]
@@ -348,14 +352,15 @@ export const FLIGHTS: Flight[] = [
     id: 'ret-30may',
     airline: 'Emirates',
     pnr: 'LA4ERB',
-    number: 'EK ___',
+    number: 'EK313',
     date: '2026-05-30',
-    depart: '— TBD —',
-    arrive: '— TBD —',
-    from: 'NRT',
+    depart: '00:05',
+    arrive: '06:25',
+    from: 'HND',
     to: 'DXB',
-    confirmed: false,
-  },
+    confirmed: true,
+    notes: 'DXB arrives Terminal 3. Departs Haneda (HND), not Narita.',
+  } as Flight & { notes?: string },
 ]
 
 export type Ticket = {
@@ -526,15 +531,20 @@ export const ACTIVITIES: Activity[] = [
   { date: '2026-05-28', title: 'Osaka day — Dotonbori, Namba', city: 'Osaka', kind: 'sight' },
   { date: '2026-05-28', title: 'Dinner: Shama Vegetarian Indian', city: 'Osaka', kind: 'meal', ref: 'shama' },
 
-  // Day 8 Fri 29 May - back to Tokyo
+  // Day 8 Fri 29 May - back to Tokyo, departure night (flight 00:05 next day from HND)
   { date: '2026-05-29', time: '09:24', title: 'Nozomi 84 Shin-Osaka → Tokyo (Car 9, 6-C/D + 7-D)', city: 'Osaka', kind: 'transport', ref: 'nozomi-84' },
-  { date: '2026-05-29', title: 'Check in MONday Apart Ningyocho', city: 'Tokyo', kind: 'check-in', ref: 'monday-ningyocho' },
-  { date: '2026-05-29', time: '20:00', title: 'TeamLab Planets — BOOK', city: 'Tokyo', kind: 'sight' },
-  { date: '2026-05-29', time: '19:00', title: 'Ain Soph Ginza dinner — BOOK', city: 'Tokyo', kind: 'meal', ref: 'ainsoph-ginza' },
+  { date: '2026-05-29', time: '13:00', title: 'Lunch in Tokyo', city: 'Tokyo', kind: 'meal' },
+  { date: '2026-05-29', time: '15:00', title: 'Check in MONday Apart Ningyocho (day use — shower, drop bags)', city: 'Tokyo', kind: 'check-in', ref: 'monday-ningyocho',
+    notes: 'Day use only — no overnight. Flight EK313 departs HND at 00:05.' },
+  { date: '2026-05-29', time: '16:00', title: 'TeamLab Planets — BOOK afternoon slot', city: 'Tokyo', kind: 'sight' },
+  { date: '2026-05-29', time: '18:30', title: 'Early dinner: Ain Soph Ginza — BOOK', city: 'Tokyo', kind: 'meal', ref: 'ainsoph-ginza' },
+  { date: '2026-05-29', time: '20:30', title: 'Pick up bags from MONday Apart', city: 'Tokyo', kind: 'transport' },
+  { date: '2026-05-29', time: '21:00', title: 'T-CAT limousine bus → Haneda Airport (HND)', city: 'Tokyo', kind: 'transport' },
+  { date: '2026-05-29', time: '22:00', title: 'Check in at HND for EK313', city: 'Tokyo', kind: 'transport', ref: 'ret-30may' },
 
   // Day 9 Sat 30 May - Depart
-  { date: '2026-05-30', title: 'T-CAT bus to Narita', city: 'Tokyo', kind: 'transport' },
-  { date: '2026-05-30', title: 'Fly NRT → DXB (Emirates)', city: 'Tokyo', kind: 'transport' },
+  { date: '2026-05-30', time: '00:05', title: 'EK313 HND → DXB', city: 'Tokyo', kind: 'transport', ref: 'ret-30may' },
+  { date: '2026-05-30', time: '06:25', title: 'Arrive DXB Terminal 3', city: 'Dubai', kind: 'transport' },
 ]
 
 export type BookingStatus = {
@@ -548,7 +558,7 @@ export type BookingStatus = {
 
 export const BOOKING_STATUS: BookingStatus[] = [
   { id: 'flight-out', label: 'Flight out · EK318 · 22 May 02:40 → NRT · PNR LA4ERB', done: true, category: 'flights' },
-  { id: 'flight-ret', label: 'Flight return · 30 May NRT → DXB (number TBD)', done: false, category: 'flights', detail: 'Confirm Emirates return flight number, depart/arrive times.' },
+  { id: 'flight-ret', label: 'Flight return · EK313 · 30 May 00:05 HND → DXB · PNR LA4ERB', done: true, category: 'flights' },
   { id: 'hotel-minn-ueno', label: 'Hotel: Minn Ueno Iriya · 22–26 May · #5694.443.883', done: true, category: 'hotels' },
   { id: 'hotel-minn-kyoto', label: 'Hotel: Minn Karasuma Gojo Kyoto · 26 May · #6840.916.416', done: true, category: 'hotels' },
   { id: 'hotel-citadines', label: 'Hotel: Citadines Namba Osaka · 27–29 May · #6816.645.167', done: true, category: 'hotels' },
@@ -632,6 +642,7 @@ export type TaxiDestination = {
 }
 
 export const TAXI_DESTINATIONS: TaxiDestination[] = [
+  { id: 'haneda', label: 'Haneda Airport (HND) — International T3', nameJa: '羽田空港 第3ターミナル', addressJa: '東京都大田区羽田空港2-6-5 第3旅客ターミナル' },
   { id: 'narita-t2', label: 'Narita Airport — Terminal 2', nameJa: '成田空港 第2ターミナル', addressJa: '千葉県成田市古込1-1 第2旅客ターミナルビル' },
   { id: 'tokyo-station', label: 'Tokyo Station', nameJa: '東京駅', addressJa: '東京都千代田区丸の内1丁目' },
   { id: 'shin-osaka', label: 'Shin-Osaka Station', nameJa: '新大阪駅', addressJa: '大阪市淀川区西中島5丁目' },

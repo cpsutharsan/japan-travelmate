@@ -78,6 +78,25 @@ create table if not exists public.bookings (
 --   voice     (private)   — voice memos
 --   profiles  (private)   — passport scans, family avatars
 
+-- Storage RLS policies. Without these the anon key sees "Object not found" for
+-- every file in every bucket — RLS hides rows it isn't allowed to read.
+-- Allow any signed-in user to read all family-scoped buckets, and to upload to
+-- the buckets the app writes into from the browser.
+do $$
+declare b text;
+begin
+  for b in select unnest(array['documents', 'profiles', 'bookings', 'photos', 'voice']) loop
+    execute format(
+      'drop policy if exists "tm_storage_%s" on storage.objects', b
+    );
+    execute format(
+      'create policy "tm_storage_%s" on storage.objects for all to authenticated
+        using (bucket_id = %L) with check (bucket_id = %L)',
+       b, b, b
+    );
+  end loop;
+end $$;
+
 -- Row Level Security: enable, then allow any authenticated user (you + Divya)
 do $$
 declare t text;
