@@ -126,6 +126,12 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* AI features */}
+      <div className="grid grid-cols-2 gap-3">
+        <Link href="/translate" className="btn-primary !min-h-[60px] !text-base">🗣️ Translate live</Link>
+        <Link href="/chat"      className="btn-outline !min-h-[60px] !text-base">💬 Ask Claude</Link>
+      </div>
+
       {/* Quick stats / shortcuts */}
       <div className="grid grid-cols-3 gap-3">
         <Link href="/expenses"   className="card text-center text-sm">💴<span className="block mt-1 text-xs text-ink/60">Expenses</span></Link>

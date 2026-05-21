@@ -1,6 +1,8 @@
 import Link from 'next/link'
 
 const ITEMS: { href: string; label: string; sub: string }[] = [
+  { href: '/translate',    label: '🗣️ Translate (live)',  sub: 'Speak EN → big Japanese · powered by Claude' },
+  { href: '/chat',         label: '💬 Travel chat',       sub: 'Ask Claude anything about the trip'           },
   { href: '/restaurants',  label: '🍱 Restaurants',       sub: 'Pre-loaded vegetarian spots' },
   { href: '/phrasebook',   label: '🗣️ Phrase book',       sub: 'Japanese with audio'         },
   { href: '/checklists',   label: '✅ Checklists',         sub: 'Pre-trip, daily, Adira bag'  },
