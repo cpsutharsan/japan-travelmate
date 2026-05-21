@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { activitiesFor, hotelForNight } from '@/lib/select'
+import { activitiesFor, hotelForNight, hotelsForNight } from '@/lib/select'
 import { fmtLong } from '@/lib/date'
 import { RESTAURANTS, TRAINS, TRIP } from '@/lib/trip'
 import { tripDateISO } from '@/lib/date'
@@ -14,6 +14,8 @@ export default function DayPage({ params }: { params: { date: string } }) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) notFound()
   const activities = activitiesFor(date)
   const hotel = hotelForNight(date)
+  const allHotels = hotelsForNight(date)
+  const baseHotel = allHotels.find(h => h.id !== hotel?.id) ?? null
 
   return (
     <div className="px-5 py-3 space-y-4">
@@ -26,6 +28,11 @@ export default function DayPage({ params }: { params: { date: string } }) {
           <p className="font-medium mt-0.5">{hotel.name}</p>
           <p className="jp text-sm">{hotel.addressJa}</p>
           <p className="text-xs text-ink/55">{hotel.addressEn}</p>
+          {baseHotel && (
+            <p className="text-xs text-ink/55 mt-2 border-t border-black/5 pt-2">
+              🧳 Base (luggage stays here): <span className="font-medium text-ink/80">{baseHotel.name}</span> — still checked in {baseHotel.checkIn.slice(8)}–{baseHotel.checkOut.slice(8)} May.
+            </p>
+          )}
         </section>
       )}
 

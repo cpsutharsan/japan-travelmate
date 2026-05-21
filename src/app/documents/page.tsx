@@ -27,7 +27,14 @@ export default function DocumentsPage() {
     const { data, error } = await c.storage.from('documents').createSignedUrl(path, 60 * 10)
     setBusy(null)
     if (error || !data?.signedUrl) {
-      setErr(error?.message || 'Could not open this file. Has it been uploaded yet?')
+      const msg = (error?.message || '').toLowerCase()
+      if (msg.includes('not found') || msg.includes('object')) {
+        setErr(`${path} hasn't been uploaded yet. See the upload guide at the bottom of this page.`)
+      } else if (msg.includes('bucket')) {
+        setErr(`The "documents" bucket doesn't exist. Create it in Supabase → Storage → New bucket (private).`)
+      } else {
+        setErr(error?.message || 'Could not open this file.')
+      }
       return
     }
     window.open(data.signedUrl, '_blank')

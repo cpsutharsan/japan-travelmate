@@ -11,12 +11,19 @@ export function hotelForNight(dateISO: string): Hotel | null {
   // interval contains dateISO. Two bookings can overlap (e.g. on 24 May we sleep
   // at Disney Celebration but Minn Ueno is also reserved for luggage) — in that
   // case the SHORTER stay wins, since that's where we're actually sleeping.
-  const candidates = HOTELS.filter(h => dateISO >= h.checkIn && dateISO < h.checkOut)
+  const candidates = hotelsForNight(dateISO)
   if (candidates.length === 0) return null
-  return candidates.reduce((best, h) => {
-    const len = (d1: string, d2: string) => Math.abs(new Date(d2).getTime() - new Date(d1).getTime())
-    return len(best.checkIn, best.checkOut) <= len(h.checkIn, h.checkOut) ? best : h
-  })
+  return candidates[0]
+}
+
+/** All hotels actively reserved on the given date, sorted shortest-stay first. */
+export function hotelsForNight(dateISO: string): Hotel[] {
+  return HOTELS
+    .filter(h => dateISO >= h.checkIn && dateISO < h.checkOut)
+    .sort((a, b) => {
+      const len = (h: Hotel) => Math.abs(new Date(h.checkOut).getTime() - new Date(h.checkIn).getTime())
+      return len(a) - len(b)
+    })
 }
 
 export function activitiesFor(dateISO: string): Activity[] {

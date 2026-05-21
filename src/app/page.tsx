@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { activitiesFor, hotelForNight, nextActivity, todayISO } from '@/lib/select'
+import { activitiesFor, hotelForNight, hotelsForNight, nextActivity, todayISO } from '@/lib/select'
 import { fmtLong } from '@/lib/date'
 import { tripDayNumber } from '@/lib/date'
 import { CopyChip } from '@/components/CopyChip'
@@ -19,6 +19,8 @@ export default function HomePage() {
     `Day ${day} of ${TRIP.totalDays}`
 
   const hotel = hotelForNight(today)
+  const allHotels = hotelsForNight(today)
+  const baseHotel = allHotels.find(h => h.id !== hotel?.id) ?? null
   const upcoming = nextActivity(today)
   const todays = activitiesFor(today)
   const meals = todays.filter(a => a.kind === 'meal')
@@ -51,6 +53,11 @@ export default function HomePage() {
           <p className="text-sm jp text-ink/80">{hotel.addressJa}</p>
           <p className="text-xs text-ink/50">{hotel.addressEn}</p>
           {hotel.notes && <p className="text-xs text-ink/60 italic">{hotel.notes}</p>}
+          {baseHotel && (
+            <p className="text-xs text-ink/55 mt-1 border-t border-black/5 pt-2">
+              🧳 Base hotel (luggage): <span className="font-medium text-ink/80">{baseHotel.name}</span>
+            </p>
+          )}
           <div className="flex gap-2 pt-1">
             <Link href={`/taxi?to=${hotel.id}`} className="btn-outline text-xs">🚕 Take me here</Link>
             <a className="btn-outline text-xs"
