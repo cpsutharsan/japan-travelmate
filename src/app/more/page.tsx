@@ -9,6 +9,7 @@ const ITEMS: { href: string; label: string; sub: string }[] = [
   { href: '/expenses',     label: '💴 Expenses',           sub: '¥ → AED, budget chart'        },
   { href: '/converter',    label: '¥⇄د.إ Converter',       sub: 'Live currency + tax-free'    },
   { href: '/taxi',         label: '🚕 Taxi card',          sub: 'Hotel + destinations in JP'  },
+  { href: '/esims',        label: '📱 eSIMs',              sub: 'Sakura Mobile install codes'  },
   { href: '/share',        label: '📤 Photo sharing',      sub: 'One-tap WhatsApp to family'  },
   { href: '/souvenirs',    label: '🎁 Souvenir tracker',   sub: 'Who gets what'               },
   { href: '/adira',        label: '🧒 Adira mode',         sub: 'Safety card + happy meter'   },

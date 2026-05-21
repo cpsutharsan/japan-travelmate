@@ -68,7 +68,7 @@ export const FAMILY: Family[] = [
     eidFile: 'sutharsan/eid.pdf',
     mobileDubai: '+971 56 282 9428',
     mobileRoaming: '+971 56 282 9428',
-    esimJp: 'Sakura Mobile (data-only SIM)',
+    esimJp: 'Sakura Mobile · ICCID …370169 (10-day unlimited)',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
     bloodGroup: 'O+',
@@ -96,7 +96,7 @@ export const FAMILY: Family[] = [
     eidFile: 'divya/eid.pdf',
     mobileDubai: '+971 50 662 3918',
     mobileRoaming: '+971 50 662 3918',
-    esimJp: 'Sakura Mobile (data-only SIM)',
+    esimJp: 'Sakura Mobile · ICCID …982096 (10-day unlimited)',
     emergencyContactName: '— to be filled —',
     emergencyContactPhone: '+971 — to be filled —',
     bloodGroup: 'B+',
@@ -390,6 +390,45 @@ export const TICKETS: Ticket[] = [
   },
 ]
 
+export type Esim = {
+  id: string
+  who: 'sutharsan' | 'divya' | 'shared'
+  iccid: string
+  smDpIos: string
+  activationIos: string
+  activationAndroid: string
+  issued: string
+}
+
+export const ESIM_BOOKING = {
+  bookingId: 'LDQP-896950',
+  provider: 'Sakura Mobile',
+  plan: 'Japan 5G/4G Unlimited Data eSIM — au by KDDI',
+  durationDays: 10,
+  quantity: 2,
+}
+
+export const ESIMS: Esim[] = [
+  {
+    id: 'esim-sutharsan',
+    who: 'sutharsan',
+    iccid: '8981300055404370169',
+    smDpIos: 'SM-V4-012-A-GTM.PR.GO-ESIM.COM',
+    activationIos: '943334C6D6AC86927A68B1920B8C6E27',
+    activationAndroid: 'LPA:1$SM-V4-012-A-GTM.PR.GO-ESIM.COM$943334C6D6AC86927A68B1920B8C6E27',
+    issued: '2026-05-21T23:51',
+  },
+  {
+    id: 'esim-divya',
+    who: 'divya',
+    iccid: '8981300025415982096',
+    smDpIos: 'kddi.prod.ondemandconnectivity.com',
+    activationIos: 'QLOLAKBXZZT2L15EG3CG020KXPVZM2KN',
+    activationAndroid: 'LPA:1$kddi.prod.ondemandconnectivity.com$QLOLAKBXZZT2L15EG3CG020KXPVZM2KN',
+    issued: '2026-05-21T17:57',
+  },
+]
+
 export type Restaurant = {
   id: string
   name: string
@@ -575,8 +614,7 @@ export const BOOKING_STATUS: BookingStatus[] = [
     link: 'https://www.shibuya-scramble-square.com/sky/' },
   { id: 'ainsoph-ginza', label: 'Ain Soph Ginza dinner — Fri 29 May 7 PM', done: false, category: 'restaurants' },
   { id: 'insurance', label: 'Travel insurance', done: false, category: 'misc' },
-  { id: 'esim', label: 'eSIM (Airalo Japan) or pocket WiFi', done: false, category: 'misc',
-    link: 'https://www.airalo.com/japan-esim' },
+  { id: 'esim', label: 'eSIM × 2 · Sakura Mobile (au/KDDI 10-day unlimited) · #LDQP-896950', done: true, category: 'misc', link: '/esims' },
   { id: 'yamato', label: 'Yamato luggage forwarding (arrange on arrival)', done: false, category: 'misc' },
 ]
 
