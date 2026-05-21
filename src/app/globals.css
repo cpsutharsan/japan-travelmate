@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+html, body {
+  background: #faf7f2;
+  color: #1a1a1a;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-image:
+    radial-gradient(rgba(26,26,26,0.025) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  min-height: 100dvh;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-paper border border-black/5 p-4;
+  }
+  .card-bordered-vermilion { @apply border-l-4 border-l-vermilion; }
+  .card-bordered-indigo    { @apply border-l-4 border-l-indigo; }
+  .card-bordered-gold      { @apply border-l-4 border-l-gold; }
+  .card-bordered-sage      { @apply border-l-4 border-l-sage; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full
+      px-5 py-3 font-medium text-sm transition active:scale-[0.98]
+      min-h-[44px];
+  }
+  .btn-primary   { @apply btn bg-ink text-paper hover:bg-black/85; }
+  .btn-vermilion { @apply btn bg-vermilion text-white hover:opacity-90; }
+  .btn-outline   { @apply btn bg-white text-ink border border-black/10 hover:bg-black/5; }
+
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs
+      bg-black/5 text-ink/70;
+  }
+
+  .h-display { @apply font-display tracking-tight; }
+
+  .input {
+    @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3
+      text-base placeholder:text-ink/30 focus:outline-none focus:ring-2
+      focus:ring-indigo/50;
+  }
+
+  .jp { @apply font-jp; }
+}
+
+/* Torii gate watermark for headers */
+.watermark-torii {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23d23a2c' stroke-width='3' stroke-linecap='round'><path d='M8 18h48M10 22h44'/><path d='M16 22v38M48 22v38'/><path d='M20 32h24'/></g></svg>");
+  background-repeat: no-repeat;
+  background-position: right -10px top -8px;
+  background-size: 90px 90px;
+  opacity: 0.85;
+}
+
+/* Hide scrollbar on horizontal lists */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
