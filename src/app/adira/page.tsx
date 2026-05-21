@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { FAMILY, ADIRA_CARD_JA } from '@/lib/trip'
 import { hotelForNight, todayISO } from '@/lib/select'
 import { CopyChip } from '@/components/CopyChip'
+import { Avatar } from '@/components/Avatar'
 
 export default function AdiraSafetyPage() {
   const adira = FAMILY.find(f => f.id === 'adira')!
@@ -17,7 +18,7 @@ export default function AdiraSafetyPage() {
       <Link href="/" className="text-sm text-ink/60">← Home</Link>
 
       <section className="card card-bordered-vermilion text-center">
-        <div className="w-28 h-28 rounded-full bg-paper border border-black/10 mx-auto grid place-items-center text-4xl">A</div>
+        <div className="mx-auto inline-block"><Avatar id="adira" name={adira.name} size={112} /></div>
         <h1 className="h-display text-3xl mt-2">{adira.name}</h1>
         <p className="jp text-2xl">{adira.nameJa}</p>
         <p className="text-xs text-ink/60 mt-1">Age {adira.age} · Daughter</p>

@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation'
 import { FAMILY, type Family } from '@/lib/trip'
 import { db, getSettings, setSettings } from '@/lib/db'
 import { CopyChip } from '@/components/CopyChip'
+import { Avatar, invalidateAvatar } from '@/components/Avatar'
+import { getSupabaseBrowser, hasSupabase } from '@/lib/supabase/client'
 
 export default function FamilyDetail() {
   const id = (useParams().id as Family['id'])
@@ -45,12 +47,11 @@ export default function FamilyDetail() {
       <Link href="/family" className="text-sm text-ink/60">← All</Link>
 
       <section className="card text-center">
-        <div className="w-24 h-24 rounded-full bg-paper border border-black/10 mx-auto grid place-items-center text-3xl">
-          {merged.name.slice(0, 1)}
-        </div>
+        <div className="mx-auto inline-block"><Avatar id={id} name={merged.name} size={96} /></div>
         <h1 className="h-display text-3xl mt-3">{merged.name}</h1>
         <p className="jp text-xl">{merged.nameJa}</p>
         <p className="text-xs text-ink/55">{merged.role}{merged.age ? ` · age ${merged.age}` : ''}</p>
+        <PhotoUploader id={id} />
       </section>
 
       <section className="card space-y-3">
@@ -131,6 +132,41 @@ function Row({ label, value, onChange, editable }: { label: string; value: strin
         ? <input className="input mt-1" value={value} onChange={e => onChange?.(e.target.value)} />
         : <p className="text-sm mt-1 break-all">{value}</p>}
     </label>
+  )
+}
+
+function PhotoUploader({ id }: { id: string }) {
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
+  const supa = hasSupabase()
+  async function pick(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    if (!supa) { setMsg('Connect Supabase to save photos.'); return }
+    setBusy(true); setMsg(null)
+    const c = getSupabaseBrowser()!
+    const ext = (f.name.split('.').pop() || 'jpg').toLowerCase().replace('jpeg', 'jpg')
+    const dest = `${id}/avatar.${ext}`
+    // Delete any other extension variants so only one avatar lives per person.
+    for (const x of ['jpg', 'png', 'webp', 'heic']) {
+      if (x !== ext) { await c.storage.from('profiles').remove([`${id}/avatar.${x}`]).catch(() => {}) }
+    }
+    const { error } = await c.storage.from('profiles').upload(dest, f, { upsert: true, contentType: f.type || 'image/jpeg' })
+    if (error) { setMsg(error.message); setBusy(false); return }
+    invalidateAvatar(id)
+    setMsg('Saved — pull down to refresh other screens.')
+    setBusy(false)
+    e.target.value = ''
+    setTimeout(() => location.reload(), 600)
+  }
+  return (
+    <>
+      <label className="pill inline-block mt-3 cursor-pointer">
+        {busy ? 'Saving…' : '📷 Change photo'}
+        <input type="file" accept="image/*" className="hidden" onChange={pick} disabled={busy || !supa} />
+      </label>
+      {msg && <p className="text-xs text-ink/55 mt-1">{msg}</p>}
+    </>
   )
 }
 

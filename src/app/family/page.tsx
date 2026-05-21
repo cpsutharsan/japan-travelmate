@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { FAMILY } from '@/lib/trip'
+import { Avatar } from '@/components/Avatar'
 
 export default function FamilyIndex() {
   return (
@@ -11,9 +12,7 @@ export default function FamilyIndex() {
         {FAMILY.map(f => (
           <li key={f.id}>
             <Link href={`/family/${f.id}`} className="card flex items-center gap-3">
-              <span className="w-12 h-12 rounded-full bg-paper border border-black/10 grid place-items-center font-display text-lg">
-                {f.name.slice(0, 1)}
-              </span>
+              <Avatar id={f.id} name={f.name} size={48} />
               <div className="flex-1">
                 <p className="font-medium">{f.name}</p>
                 <p className="jp text-sm text-ink/65">{f.nameJa}</p>

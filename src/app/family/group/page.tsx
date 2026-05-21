@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FAMILY } from '@/lib/trip'
 import { hotelForNight, todayISO } from '@/lib/select'
+import { Avatar } from '@/components/Avatar'
 
 export default function FamilyGroup() {
   const hotel = hotelForNight(todayISO())
@@ -16,9 +17,7 @@ export default function FamilyGroup() {
         <div className="grid grid-cols-3 gap-3">
           {FAMILY.map(f => (
             <div key={f.id} className="text-center">
-              <div className="w-16 h-16 rounded-full bg-paper border border-black/10 mx-auto grid place-items-center font-display text-xl">
-                {f.name.slice(0, 1)}
-              </div>
+              <div className="mx-auto"><Avatar id={f.id} name={f.name} size={64} /></div>
               <p className="text-xs font-medium mt-1">{f.name.split(' ')[0]}</p>
               <p className="jp text-[11px] text-ink/65">{f.nameJa}</p>
             </div>
