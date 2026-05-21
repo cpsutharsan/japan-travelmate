@@ -6,6 +6,7 @@ import { CopyChip } from '@/components/CopyChip'
 import { Countdown } from '@/components/Countdown'
 import { FamilyAvatars } from '@/components/FamilyAvatars'
 import { SmartPrompts } from '@/components/SmartPrompts'
+import { InstallPrompt } from '@/components/InstallPrompt'
 import { TRIP } from '@/lib/trip'
 
 export const dynamic = 'force-dynamic'
@@ -27,6 +28,8 @@ export default function HomePage() {
 
   return (
     <div className="px-5 pt-2 pb-6 space-y-4">
+      <InstallPrompt />
+
       {/* Family strip */}
       <div className="flex items-center justify-between">
         <FamilyAvatars />
