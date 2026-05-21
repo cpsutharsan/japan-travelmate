@@ -262,6 +262,12 @@ export const TRAINS: Train[] = [
     to: 'Odawara',
     car: 'Car 9',
     seats: 'Adult 15-C, Adult 15-D, Child 14-D',
+    reservation: '2819',
+    ticketIds: [
+      'E92B A054 9495 CCA3 59F0 BC26 ADCF 3A4A',
+      'E735 BE4A 8C8B B1BC 47F0 ADD9 0DDE 6553',
+      'ED3F B440 8C81 9AB9 3CF9 BA40 1624 1B5C',
+    ],
     confirmed: true,
   },
   {
@@ -274,6 +280,12 @@ export const TRAINS: Train[] = [
     to: 'Kyoto',
     car: 'Car 10',
     seats: 'Adult 16-C, Adult 16-D, Child 15-D',
+    reservation: '2076',
+    ticketIds: [
+      'E206 414A F04B A526 3F41 5098 C538 1798',
+      'E80C 4B40 8041 8E2F 4991 9821 F266 0986',
+      'EE7A 3D36 F037 8758 0695 75D5 0ED7 D1DD',
+    ],
     confirmed: true,
   },
   {
@@ -541,8 +553,8 @@ export const BOOKING_STATUS: BookingStatus[] = [
   { id: 'hotel-minn-kyoto', label: 'Hotel: Minn Karasuma Gojo Kyoto · 26 May · #6840.916.416', done: true, category: 'hotels' },
   { id: 'hotel-citadines', label: 'Hotel: Citadines Namba Osaka · 27–29 May · #6816.645.167', done: true, category: 'hotels' },
   { id: 'hotel-monday', label: 'Hotel: MONday Apart Ningyocho · 29 May · #5388.029.316', done: true, category: 'hotels' },
-  { id: 'shinkansen-hikari', label: 'Hikari 633 · 26 May · Tokyo→Odawara', done: true, category: 'trains' },
-  { id: 'shinkansen-kodama', label: 'Kodama 839 · 26 May · Odawara→Kyoto', done: true, category: 'trains' },
+  { id: 'shinkansen-hikari', label: 'Hikari 633 · 26 May · Tokyo→Odawara · Res 2819', done: true, category: 'trains' },
+  { id: 'shinkansen-kodama', label: 'Kodama 839 · 26 May · Odawara→Kyoto · Res 2076', done: true, category: 'trains' },
   { id: 'shinkansen-nozomi', label: 'Nozomi 84 · 29 May · Shin-Osaka→Tokyo · Res 2061', done: true, category: 'trains' },
   { id: 'disney', label: 'Tokyo Disneyland · 25 May · #A00571698873', done: true, category: 'tickets' },
   { id: 'shigetsu', label: 'Shigetsu Kyoto — URGENT (Wed 27 May lunch)', done: false, category: 'restaurants',

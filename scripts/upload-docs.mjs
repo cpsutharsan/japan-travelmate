@@ -1,26 +1,24 @@
 #!/usr/bin/env node
 /**
- * One-shot uploader for family documents.
+ * One-shot uploader for family documents — uses Supabase Storage REST API
+ * directly (no SDK), so it works on any Node 18+ without WebSocket polyfills.
  *
  * Usage:
  *   1. Get your Supabase service_role key:
- *      Supabase Dashboard → Settings → API → "Legacy anon, service_role API keys" tab
- *      → copy the row labelled `service_role` (DON'T commit this key anywhere).
+ *      Supabase Dashboard → Settings → API → "Legacy anon, service_role API keys"
+ *      → copy the `service_role` row. DON'T commit this key.
  *   2. Run:
  *        SUPABASE_SERVICE_ROLE_KEY='eyJ...' node scripts/upload-docs.mjs
- *   3. Once finished, regenerate the service_role key in the Supabase dashboard
- *      so the leaked-in-terminal-history copy stops working.
+ *   3. Rotate the key afterwards (Dashboard → API → ⋯ next to service_role → Roll).
  *
  * The script:
  *   - Creates a private `documents` bucket if it doesn't already exist
  *   - Walks ./bookings to confirm/ and uploads each file to the canonical path
- *     under sutharsan/, divya/, adira/, family/
  *   - Skips files that already exist (idempotent — safe to re-run)
  */
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = 'https://nxtdiouikrkyftsogiet.supabase.co'
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -32,10 +30,12 @@ if (!KEY) {
   process.exit(1)
 }
 
-const supa = createClient(SUPABASE_URL, KEY, { auth: { persistSession: false } })
+const baseHeaders = {
+  Authorization: `Bearer ${KEY}`,
+  apikey: KEY,
+}
 
-// Mapping: source filename → destination path inside the `documents` bucket.
-// Keep these aligned with src/lib/trip.ts DOCUMENTS.
+// Source filename → destination path inside the `documents` bucket.
 const MAP = {
   '8.Passport_Sutharsan CP.pdf':     'sutharsan/passport.pdf',
   '11.VISA_Sutharsan.pdf':           'sutharsan/visa.pdf',
@@ -52,40 +52,45 @@ const MAP = {
   '17.Birth certificate_Adira.pdf':  'adira/birth-certificate.pdf',
   '16.Marriage Certificate.pdf':     'family/marriage-certificate.pdf',
   'DXB-JPN BOARDING PASS.pdf':       'family/boarding-pass-dxb-nrt.pdf',
-  // Booking confirmations — useful to keep as a private archive
   'Booking.com_ Confirmation.pdf':   'family/hotel-minn-ueno.pdf',
   'Booking.com_ Confirmation1.pdf':  'family/hotel-minn-kyoto.pdf',
   'Booking.com_ Confirmation2.pdf':  'family/hotel-citadines-namba.pdf',
   'Booking.com_ Confirmation3.pdf':  'family/hotel-monday-ningyocho.pdf',
-  // Disney + Nozomi
   'Tokyo Disney Resort_ Code for your Park ticket [A00571698873].eml': 'family/disney-park-ticket.eml',
-  'ticket_JP0510556171_shin_osaka_station_tokyo_2026-05-29 (1).pdf': 'family/shinkansen-nozomi84.pdf',
+  'ticket_JP0510556150_tokyo_station_odawara_2026-05-26.pdf':         'family/shinkansen-hikari633.pdf',
+  'ticket_JP0510556161_odawara_station_kyoto_2026-05-26 (1).pdf':     'family/shinkansen-kodama839.pdf',
+  'ticket_JP0510556171_shin_osaka_station_tokyo_2026-05-29.pdf':      'family/shinkansen-nozomi84.pdf',
 }
 
 async function ensureBucket() {
-  const { data: buckets, error } = await supa.storage.listBuckets()
-  if (error) throw error
-  if (buckets.find(b => b.name === BUCKET)) {
-    console.log(`✓ bucket "${BUCKET}" already exists`)
-    return
-  }
-  const { error: cerr } = await supa.storage.createBucket(BUCKET, { public: false })
-  if (cerr) throw cerr
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${BUCKET}`, { headers: baseHeaders })
+  if (res.ok) { console.log(`✓ bucket "${BUCKET}" already exists`); return }
+  // Supabase Storage can return HTTP 400 with `"statusCode":"404"` in the body
+  // for a missing bucket. Treat any 404-like response as "create it".
+  const body = await res.text()
+  const notFound = res.status === 404 || /not[_ ]?found/i.test(body) || /"statusCode"\s*:\s*"?404"?/.test(body)
+  if (!notFound) throw new Error(`Bucket lookup failed: ${res.status} ${body}`)
+  const cres = await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+    method: 'POST',
+    headers: { ...baseHeaders, 'content-type': 'application/json' },
+    body: JSON.stringify({ id: BUCKET, name: BUCKET, public: false }),
+  })
+  if (!cres.ok) throw new Error(`Bucket create failed: ${cres.status} ${await cres.text()}`)
   console.log(`✓ created private bucket "${BUCKET}"`)
 }
 
 async function fileExists(dest) {
-  const dir = path.dirname(dest)
-  const base = path.basename(dest)
-  const { data } = await supa.storage.from(BUCKET).list(dir, { search: base })
-  return data?.some(f => f.name === base)
+  // HEAD on the storage REST returns 200/400 oddly across versions; using GET
+  // info endpoint is the most reliable.
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/info/${BUCKET}/${encodeURIComponent(dest).replace(/%2F/g, '/')}`, {
+    headers: baseHeaders,
+  })
+  return res.ok
 }
 
 async function uploadOne(srcName, destPath) {
   const src = path.join(SRC_DIR, srcName)
-  try {
-    await fs.access(src)
-  } catch {
+  try { await fs.access(src) } catch {
     console.warn(`  · skip (source missing): ${srcName}`)
     return
   }
@@ -97,9 +102,14 @@ async function uploadOne(srcName, destPath) {
   const contentType = srcName.endsWith('.eml') ? 'message/rfc822' :
                       srcName.endsWith('.png') ? 'image/png' :
                       'application/pdf'
-  const { error } = await supa.storage.from(BUCKET).upload(destPath, body, { contentType, upsert: false })
-  if (error) {
-    console.error(`  ✗ ${destPath}: ${error.message}`)
+  const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${encodeURIComponent(destPath).replace(/%2F/g, '/')}`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { ...baseHeaders, 'content-type': contentType, 'x-upsert': 'false' },
+    body,
+  })
+  if (!res.ok) {
+    console.error(`  ✗ ${destPath}: ${res.status} ${(await res.text()).slice(0, 200)}`)
     return
   }
   console.log(`  ✓ ${destPath} (${(body.length / 1024).toFixed(0)} KB)`)
