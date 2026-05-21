@@ -150,23 +150,6 @@ export type Hotel = {
 }
 
 export const HOTELS: Hotel[] = [
-  // Order matters: when a date is inside multiple stays (e.g. 24 May night is Disney
-  // Celebration but Minn Ueno is also reserved), the shorter stay should win.
-  // hotelForNight() in src/lib/select.ts now prefers the shortest matching range, so
-  // any order here is safe; we still list Disney Celebration first for readability.
-  {
-    id: 'disney-celebration',
-    name: 'Tokyo Disney Celebration Hotel',
-    nameJa: '東京ディズニーセレブレーションホテル',
-    addressEn: '1-1 Maihama, Urayasu-shi, Chiba, Japan',
-    addressJa: '千葉県浦安市舞浜1-1',
-    city: 'Tokyo',
-    checkIn: '2026-05-24',
-    checkInTime: '15:00',
-    checkOut: '2026-05-25',
-    checkOutTime: '11:00',
-    notes: 'Happy Entry — 15-min early access to Tokyo Disneyland on 25 May.',
-  },
   {
     id: 'minn-ueno',
     name: 'Minn Ueno Iriya',
@@ -186,7 +169,7 @@ export const HOTELS: Hotel[] = [
     checkInTime: '15:00',
     checkOut: '2026-05-26',
     checkOutTime: '10:00',
-    notes: '4 nights paid. 24 May night spent at Disney Celebration — luggage stays in this room. Pre-check-in done. Arrival 19:00–20:00.',
+    notes: '4 nights paid (22–26 May). Pre-check-in done. Arrival 19:00–20:00.',
   },
   {
     id: 'minn-kyoto',
@@ -386,7 +369,7 @@ export const TICKETS: Ticket[] = [
       { who: 'Divya',     code: '2102012-621-06357880-6' },
       { who: 'Adira',     code: '2102032-621-01263138-9' },
     ],
-    notes: 'Use Tokyo Disney Resort App. Validity through 10 May 2027 if unused.',
+    notes: 'Day trip from Minn Ueno (Disney Celebration cancelled). Use Tokyo Disney Resort App. Validity through 10 May 2027 if unused.',
   },
 ]
 
@@ -505,15 +488,15 @@ export const ACTIVITIES: Activity[] = [
   { date: '2026-05-23', title: 'Asakusa morning (Senso-ji)', city: 'Tokyo', kind: 'sight' },
   { date: '2026-05-23', time: '18:00', title: 'Shibuya Sky (sunset slot)', city: 'Tokyo', kind: 'sight', notes: 'Book ahead' },
 
-  // Day 3 Sun 24 May - Travel to Disney area, check in
-  { date: '2026-05-24', title: 'Travel to Maihama / Disney area', city: 'Tokyo', kind: 'transport' },
-  { date: '2026-05-24', time: '15:00', title: 'Check in Disney Celebration Hotel', city: 'Tokyo', kind: 'check-in', ref: 'disney-celebration',
-    notes: 'Sleep here to unlock Happy Entry next morning' },
-  { date: '2026-05-24', title: 'Evening: relax / DisneySea preview / dinner', city: 'Tokyo', kind: 'sight' },
+  // Day 3 Sun 24 May - Free Tokyo day (Disney Celebration cancelled)
+  { date: '2026-05-24', title: 'Ueno Park / Skytree / free Tokyo day', city: 'Tokyo', kind: 'sight',
+    notes: 'Open day — pick from Ueno Zoo, Skytree, Imperial Palace gardens, Akihabara, etc.' },
+  { date: '2026-05-24', title: 'Evening: relax / dinner near Minn Ueno', city: 'Tokyo', kind: 'meal' },
 
-  // Day 4 Mon 25 May - Disneyland day
-  { date: '2026-05-25', time: '08:15', title: 'Happy Entry → Tokyo Disneyland', city: 'Tokyo', kind: 'park', ref: 'disneyland-25may',
-    notes: '15-min early access for Celebration Hotel guests. Reservation A00571698873.' },
+  // Day 4 Mon 25 May - Disneyland day trip from Minn Ueno
+  { date: '2026-05-25', time: '07:30', title: 'Travel Ueno → Maihama (JR Keihin-Tohoku + Keiyo lines, ~40 min)', city: 'Tokyo', kind: 'transport' },
+  { date: '2026-05-25', time: '09:00', title: 'Tokyo Disneyland — 1-Day Passport', city: 'Tokyo', kind: 'park', ref: 'disneyland-25may',
+    notes: 'Reservation A00571698873. Park opens 09:00 (no Happy Entry — Celebration hotel cancelled).' },
   { date: '2026-05-25', title: 'Return to Minn Ueno Iriya in the evening', city: 'Tokyo', kind: 'check-in', ref: 'minn-ueno' },
 
   // Day 5 Tue 26 May - Hakone day trip + Kyoto
@@ -555,7 +538,6 @@ export const BOOKING_STATUS: BookingStatus[] = [
   { id: 'flight-out', label: 'Flight out · EK318 · 22 May 02:40 → NRT · PNR LA4ERB', done: true, category: 'flights' },
   { id: 'flight-ret', label: 'Flight return · 30 May NRT → DXB (number TBD)', done: false, category: 'flights', detail: 'Confirm Emirates return flight number, depart/arrive times.' },
   { id: 'hotel-minn-ueno', label: 'Hotel: Minn Ueno Iriya · 22–26 May · #5694.443.883', done: true, category: 'hotels' },
-  { id: 'hotel-disney', label: 'Hotel: Disney Celebration Hotel · 24 May', done: true, category: 'hotels' },
   { id: 'hotel-minn-kyoto', label: 'Hotel: Minn Karasuma Gojo Kyoto · 26 May · #6840.916.416', done: true, category: 'hotels' },
   { id: 'hotel-citadines', label: 'Hotel: Citadines Namba Osaka · 27–29 May · #6816.645.167', done: true, category: 'hotels' },
   { id: 'hotel-monday', label: 'Hotel: MONday Apart Ningyocho · 29 May · #5388.029.316', done: true, category: 'hotels' },
@@ -684,18 +666,28 @@ export type DocItem = {
 
 export const DOCUMENTS: DocItem[] = [
   // Sutharsan
-  { id: 'p-su',  title: 'Passport',     who: 'sutharsan', type: 'passport', path: 'sutharsan/passport.pdf' },
-  { id: 'v-su',  title: 'Japan visa',   who: 'sutharsan', type: 'visa',     path: 'sutharsan/visa.pdf' },
-  { id: 'e-su',  title: 'Emirates ID',  who: 'sutharsan', type: 'eid',      path: 'sutharsan/eid.pdf' },
+  { id: 'p-su',  title: 'Passport',         who: 'sutharsan', type: 'passport', path: 'sutharsan/passport.pdf' },
+  { id: 'v-su',  title: 'Japan visa',       who: 'sutharsan', type: 'visa',     path: 'sutharsan/visa.pdf' },
+  { id: 'ev-su', title: 'Japan eVISA doc',  who: 'sutharsan', type: 'visa',     path: 'sutharsan/evisa.pdf' },
+  { id: 'e-su',  title: 'Emirates ID',      who: 'sutharsan', type: 'eid',      path: 'sutharsan/eid.pdf' },
   // Divya
-  { id: 'p-di',  title: 'Passport',     who: 'divya',     type: 'passport', path: 'divya/passport.pdf' },
-  { id: 'v-di',  title: 'Japan visa',   who: 'divya',     type: 'visa',     path: 'divya/visa.pdf' },
-  { id: 'e-di',  title: 'Emirates ID',  who: 'divya',     type: 'eid',      path: 'divya/eid.pdf' },
+  { id: 'p-di',  title: 'Passport',         who: 'divya',     type: 'passport', path: 'divya/passport.pdf' },
+  { id: 'v-di',  title: 'Japan visa',       who: 'divya',     type: 'visa',     path: 'divya/visa.pdf' },
+  { id: 'ev-di', title: 'Japan eVISA doc',  who: 'divya',     type: 'visa',     path: 'divya/evisa.pdf' },
+  { id: 'e-di',  title: 'Emirates ID',      who: 'divya',     type: 'eid',      path: 'divya/eid.pdf' },
   // Adira
-  { id: 'p-ad',  title: 'Passport',     who: 'adira',     type: 'passport', path: 'adira/passport.pdf' },
-  { id: 'v-ad',  title: 'Japan visa',   who: 'adira',     type: 'visa',     path: 'adira/visa.pdf' },
-  { id: 'e-ad',  title: 'Emirates ID',  who: 'adira',     type: 'eid',      path: 'adira/eid.pdf' },
-  { id: 'b-ad',  title: 'Birth certificate', who: 'adira', type: 'birth',   path: 'adira/birth-certificate.pdf' },
+  { id: 'p-ad',  title: 'Passport',         who: 'adira',     type: 'passport', path: 'adira/passport.pdf' },
+  { id: 'v-ad',  title: 'Japan visa',       who: 'adira',     type: 'visa',     path: 'adira/visa.pdf' },
+  { id: 'ev-ad', title: 'Japan eVISA doc',  who: 'adira',     type: 'visa',     path: 'adira/evisa.pdf' },
+  { id: 'e-ad',  title: 'Emirates ID',      who: 'adira',     type: 'eid',      path: 'adira/eid.pdf' },
+  { id: 'b-ad',  title: 'Birth certificate',who: 'adira',     type: 'birth',    path: 'adira/birth-certificate.pdf' },
   // Family
-  { id: 'm-fam', title: 'Marriage certificate', who: 'family', type: 'certificate', path: 'family/marriage-certificate.pdf' },
+  { id: 'm-fam',     title: 'Marriage certificate',         who: 'family', type: 'certificate', path: 'family/marriage-certificate.pdf' },
+  { id: 'bp-fam',    title: 'Boarding pass (DXB → NRT)',    who: 'family', type: 'other',       path: 'family/boarding-pass-dxb-nrt.pdf' },
+  { id: 'hu-fam',    title: 'Booking — Minn Ueno',          who: 'family', type: 'other',       path: 'family/hotel-minn-ueno.pdf' },
+  { id: 'hk-fam',    title: 'Booking — Minn Kyoto',         who: 'family', type: 'other',       path: 'family/hotel-minn-kyoto.pdf' },
+  { id: 'hc-fam',    title: 'Booking — Citadines Namba',    who: 'family', type: 'other',       path: 'family/hotel-citadines-namba.pdf' },
+  { id: 'hm-fam',    title: 'Booking — MONday Ningyocho',   who: 'family', type: 'other',       path: 'family/hotel-monday-ningyocho.pdf' },
+  { id: 'sn-fam',    title: 'Shinkansen Nozomi 84 ticket',  who: 'family', type: 'other',       path: 'family/shinkansen-nozomi84.pdf' },
+  { id: 'dp-fam',    title: 'Disney park ticket (email)',   who: 'family', type: 'other',       path: 'family/disney-park-ticket.eml' },
 ]
